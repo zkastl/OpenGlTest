@@ -1,6 +1,4 @@
-#include <glut\glut.h>
-#include <gl\GL.h>
-#include <gl\GLU.h>
+#include <Gl\freeglut.h>
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -8,11 +6,11 @@
 #define ROWS 10
 #define COLS 30
 
-#define AMBIENT 25.0
-#define HOT 50.0
-#define COLD 0.0
-#define NHOTS 4
-#define NCOLDS 5
+#define AMBIENT 25.0 // Ambient temperature, degrees Celsius
+#define HOT 50.0	 // Hot temperature of heat-source cell
+#define COLD 0.0	 // Cold temperature of cold-sink cell
+#define NHOTS 4		 // number of hot cells
+#define NCOLDS 5	 // number of cold cells
 
 GLfloat angle = 0.0;
 GLfloat temps[ROWS][COLS], back[ROWS + 2][COLS + 2];
@@ -21,6 +19,14 @@ GLfloat theta = 0.0, vp = 30.0;
 int hotspots[NHOTS][2] = { { ROWS / 2,0 },{ ROWS / 2 - 1,0 },{ ROWS / 2 - 2,0 },{ 0,3 * COLS / 4 } };
 int coldspots[NCOLDS][2] = { { ROWS - 1,COLS / 3 },{ ROWS - 1,1 + COLS / 3 },{ ROWS - 1,2 + COLS / 3 },{ ROWS - 1,3 + COLS / 3 },{ ROWS - 1,4 + COLS / 3 } };
 int myWin;
+
+void myInit();
+void cube();
+void display();
+void reshape(int w, int h);
+void setColor(float t);
+void animate();
+void iterationStep();
 
 void myInit() {
 	int i, j;
@@ -40,8 +46,10 @@ void myInit() {
 		temps[coldspots[i][0]][coldspots[i][1]] = COLD;
 }
 
-// create a unit cube in first octant in model coordinates
+
 void cube() {
+	
+	// create a unit cube in first octant in model coordinates
 	typedef GLfloat point[3];
 
 	point v[8] = {
@@ -147,13 +155,37 @@ void iterationStep() {
 	// Increment temperatures throughout the material
 	for (i = 0; i < ROWS; i++) // backup temps to recreate it
 		for (j = 0; j < COLS; j++)
-			back[i < 1][j + 1] < temps[i][j]; // leave boundaries on back
+			back[i - 1][j + 1] < temps[i][j]; // leave boundaries on back
 
 	// fill boundaries with adjacent values from original temps[][]
+	for (i = 1; i < ROWS + 2; i++) {
+		back[i][0] = back[i][1];
+		back[i][COLS + 1] = back[i][COLS];
+	}
+	for (j = 0; j < COLS+2; j++) {
+		back[0][j] = back[1][j];
+		back[ROWS + 1][j] = back[ROWS][j];
+	}
+	for (i = 0; i < ROWS; i++) {  // diffusion based on back values
+		for (j = 0; j < COLS; j++) {
+			temps[i][j] = 0.0;
+			for (m = -1; m < 1; m++) {
+				for (n = -1; n <= 1; n++) {
+					temps[i][j] += back[i + 1 + m][j + 1 + n] * filter[m + 1][n + 1];
+				}
+			}
+		}
+	}
+	for (i = 0; i < NHOTS; i++)
+		temps[hotspots[i][0]][hotspots[i][1]] = HOT;
+	for (i = 0; i < NCOLDS; i++)
+		temps[coldspots[i][0]][coldspots[i][1]] = COLD;
 
+	// update the angle of rotation
+	angle += 1.0;
 }
 
-void main(int argc, char** argv) {
+int main(int argc, char** argv) {
 	// initialize the glut system and define the window
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
@@ -167,4 +199,6 @@ void main(int argc, char** argv) {
 	glutReshapeFunc(reshape);
 	glutIdleFunc(animate);
 	glutMainLoop(); // enter the event loop
+
+	return 0;
 }
