@@ -14,7 +14,7 @@ namespace OpenTkTest
     {
         static void Main(string[] args)
         {
-            using (NeoKabutoTutorial2 game = new NeoKabutoTutorial2())
+            using (SuperBibleTutorial game = new SuperBibleTutorial())
                 game.Run(30, 30);
         }
     }    

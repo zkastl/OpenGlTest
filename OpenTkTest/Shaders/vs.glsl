@@ -1,12 +1,11 @@
-﻿#version 330
-
-in vec3 vPosition;
-in vec3 vColor;
-out vec4 color;
-uniform mat4 modelView;
+﻿#version 450
 
 void main()
 {
-	gl_Position = modelView * vec4(vPosition, 1.0);
-	color = vec4(vColor, 1.0);
+	const vec4 vertices[3] = vec4[3](
+		vec4( 0.25, -0.25, 0.5, 1.0),
+		vec4(-0.25, -0.25, 0.5, 1.0),
+		vec4( 0.25,  0.25, 0.5, 1.0));
+
+	gl_Position = vertices[gl_VertexID];
 }

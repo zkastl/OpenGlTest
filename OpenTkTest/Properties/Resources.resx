@@ -121,6 +121,9 @@
   <data name="fs" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Shaders\fs.glsl;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="question" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Shaders\question.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="vs" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Shaders\vs.glsl;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
