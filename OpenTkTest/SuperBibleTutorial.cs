@@ -32,6 +32,14 @@ namespace OpenTkTest
             GL.ClearColor(new Color4((float)(Math.Sin(elapsedTime)) * 0.5f + 0.5f, (float)(Math.Cos(elapsedTime)) * 0.5f + 0.5f, 0.0f, 1.0f));
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             GL.UseProgram(programId);
+
+            float[] attributes =
+            {
+                (float)Math.Sin(elapsedTime) * 0.5f,
+                (float)Math.Cos(elapsedTime) * 0.6f,
+                0f, 0f
+            };
+            GL.VertexAttrib4(0, attributes);
             GL.DrawArrays(PrimitiveType.Triangles, 0, 3);
 
             SwapBuffers();
